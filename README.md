@@ -6,15 +6,15 @@ As the name implies it replaces firefox icons that are shown in windows desktop,
 
 ## The script as is DOES NOT WORK, why
 
-The batch script relies on **Resource Hacker** to modify firefox executable, inside which there are icons.
-You can download Resource Hacker from this URL: <http://www.angusj.com/resourcehacker/>
+The batch script relies on **Resource Hacker** to modify firefox executable, inside which there are icons.<br>
+You can download Resource Hacker from this URL: <http://www.angusj.com/resourcehacker/><br>
 **KEEP IN MIND** that you will need to write full path to Resource Hacker executable inside batch script.
 
 ## How to use
 
 Inside MODIFY folder you will find two more folders: 
 - branding (icons inside will be shown inside firefox and it's windows);
-- Icons (icons inside will be shown in windows).
+- Icons (icons inside will be shown in windows).<br>
 Modify those icons as much as you want, just keep the filenames intact.
 Then inside batch script make sure that *firefoxDirectory* and *resourceHackerPath* variables are correctly pointing to their respective locations.
 Finally run the script (Most likely script will need *administrator privileges* to modify files inside Program Files).
@@ -27,6 +27,6 @@ Finally run the script (Most likely script will need *administrator privileges* 
 
 ## In case after running the script you need to restore files
 
-You will be able to find original files inside backup folder, which you can find at the same location as this markdown file.
-Put *firefox.exe* and *private_browsing.exe* at Firefox directory, which by default is at: `C:\Program Files\Mozilla Firefox\`.
+You will be able to find original files inside backup folder, which you can find at the same location as this markdown file.<br>
+Put *firefox.exe* and *private_browsing.exe* at Firefox directory, which by default is at: `C:\Program Files\Mozilla Firefox\`.<br>
 Put *omni.ja* at: `C:\Program Files\Mozilla Firefox\browser\`.
