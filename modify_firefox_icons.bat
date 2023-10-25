@@ -32,18 +32,41 @@ set extractToFolder=%~dp0temporary
 set archiveToFile=%~dp0omni.zip
 set resourceHackerScriptPath=%~dp0rhscript.txt
 
-:: checking if administrative permissions given
-echo [WARNING] Administrator permissions required to modify files in %%ProgramFiles%%. Detecting permissions...
+set winSysFolder=System32
+set "batchPath=%~dpnx0"
+for %%k in (%0) do set batchName=%%~nk
+set "vbsGetPrivileges=%temp%\OEgetPriv_%batchName%.vbs"
+
+echo [INFO] Checking admin privileges.
 net session >nul 2>&1
-if %errorLevel% neq 0 (
-    echo [WARNING] Administrator permissions not detected.
-    set /p input=Do you still want to continue execution? [y / n]: 
-    if /I not "!input!" == "y" (
-        echo [INFO] Stopped execution.
-        pause >nul
-        exit
-    )
-) else echo [INFO] Administrator permissions detected.
+if '%errorlevel%' == '0' ( goto got_privileges ) else ( goto get_privileges )
+
+:get_privileges
+    echo [WARNING] Started without admin privileges, trying to elevate.
+
+    echo [INFO] Creating Visual Basic script that elevates privileges.
+    if '%1'=='ELEV' (echo ELEV & shift /1 & goto gotPrivileges)
+    echo Set UAC = CreateObject^("Shell.Application"^) > "%vbsGetPrivileges%"
+    echo args = "ELEV " >> "%vbsGetPrivileges%"
+    echo For Each strArg in WScript.Arguments >> "%vbsGetPrivileges%"
+    echo args = args ^& strArg ^& " "  >> "%vbsGetPrivileges%"
+    echo Next >> "%vbsGetPrivileges%"
+
+    echo args = "/c """ + "!batchPath!" + """ " + args >> "%vbsGetPrivileges%"
+    echo UAC.ShellExecute "%SystemRoot%\%winSysFolder%\cmd.exe", args, "", "runas", 1 >> "%vbsGetPrivileges%"
+
+    echo [INFO] Elevating privileges with created Visual Basic script.
+    "%SystemRoot%\%winSysFolder%\WScript.exe" "%vbsGetPrivileges%" %*
+    exit /B
+:get_privileges_end
+
+:got_privileges
+    :: setting local directory to this file directory
+    setlocal & cd /d %~dp0
+    :: deleting temporary created vbs file
+    if '%1'=='ELEV' (del "%vbsGetPrivileges%" 1>nul 2>nul  &  shift /1)
+
+echo should be running here...
 
 :modify_archive
     if %modifyArchive%==0 goto modify_archive_end
